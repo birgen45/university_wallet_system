@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> University Wallet System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d396e 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: rgb(125, 50, 118);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #969cb8;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #222a47;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+
+        .result pre {
+            margin-top: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        .wallets-list, .transactions-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .wallet-item, .transaction-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .wallet-item h3 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .wallet-item p {
+            margin: 3px 0;
+            color: #666;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1> University Wallet System</h1>
+            
+        </div>
+
+        <div class="grid">
+            <!-- Create Wallet -->
+            <div class="card">
+                <h2> Create Wallet</h2>
+                <form id="createWalletForm">
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input type="text" id="create_student_id" placeholder= required>
+                    </div>
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" id="create_student_name" placeholder= required>
+                    </div>
+                    <button type="submit" class="btn">Create Wallet</button>
+                    <div class="loading" id="createLoading"><div class="spinner"></div></div>
+                    <div class="result" id="createResult"></div>
+                </form>
+            </div>
+
+            <!-- Deposit Money -->
+            <div class="card">
+                <h2>Deposit Money</h2>
+                <form id="depositForm">
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input type="text" id="deposit_student_id" placeholder="e.g., STU001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (KES)</label>
+                        <input type="number" id="deposit_amount" placeholder="e.g., 10" required>
+                    </div>
+                    <div class="form-group">
+                        <label>M-Pesa Phone</label>
+                        <input type="text" id="deposit_phone" placeholder="254729495449" required>
+                    </div>
+                    <button type="submit" class="btn">Send STK Push</button>
+                    <div class="loading" id="depositLoading"><div class="spinner"></div></div>
+                    <div class="result" id="depositResult"></div>
+                </form>
+            </div>
+
+            <!-- Check Balance -->
+            <div class="card">
+                <h2> Check Balance</h2>
+                <form id="balanceForm">
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input type="text" id="balance_student_id" placeholder="e.g., STU001" required>
+                    </div>
+                    <button type="submit" class="btn">Check Balance</button>
+                    <div class="loading" id="balanceLoading"><div class="spinner"></div></div>
+                    <div class="result" id="balanceResult"></div>
+                </form>
+            </div>
+
+            <!-- Transfer Money -->
+            <div class="card">
+                <h2>Transfer Money</h2>
+                <form id="transferForm">
+                    <div class="form-group">
+                        <label>From Student</label>
+                        <input type="text" id="transfer_from" placeholder="e.g., STU001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>To Student</label>
+                        <input type="text" id="transfer_to" placeholder="e.g., CANTEEN" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (KES)</label>
+                        <input type="number" id="transfer_amount" placeholder="e.g., 50" required>
+                    </div>
+                    <button type="submit" class="btn">Transfer</button>
+                    <div class="loading" id="transferLoading"><div class="spinner"></div></div>
+                    <div class="result" id="transferResult"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Wallets -->
+        <div class="card">
+            <h2> All Wallets</h2>
+            <button class="btn" onclick="loadWallets()">Refresh Wallets</button>
+            <div class="loading" id="walletsLoading"><div class="spinner"></div></div>
+            <div class="wallets-list" id="walletsList"></div>
+        </div>
+
+        <!-- View Transactions -->
+        <div class="card" style="margin-top: 20px;">
+            <h2> Recent Transactions</h2>
+            <button class="btn" onclick="loadTransactions()">Refresh Transactions</button>
+            <div class="loading" id="transactionsLoading"><div class="spinner"></div></div>
+            <div class="transactions-list" id="transactionsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL - change this if needed
+        const API_URL = 'http://localhost:5000';
+
+        // Helper function to make API calls
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            const response = await fetch(`${API_URL}${endpoint}`, options);
+            return await response.json();
+        }
+
+        // Show/hide loading
+        function showLoading(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function hideLoading(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // Show result
+        function showResult(id, message, isError = false) {
+            const resultDiv = document.getElementById(id);
+            resultDiv.className = `result ${isError ? 'error' : 'success'}`;
+            resultDiv.innerHTML = `<pre>${JSON.stringify(message, null, 2)}</pre>`;
+        }
+
+        // Create Wallet
+        document.getElementById('createWalletForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('createLoading');
+
+            const data = {
+                student_id: document.getElementById('create_student_id').value,
+                student_name: document.getElementById('create_student_name').value
+            };
+
+            try {
+                const result = await apiCall('/create-wallet', 'POST', data);
+                showResult('createResult', result, result.error);
+                if (!result.error) {
+                    e.target.reset();
+                    loadWallets();
+                }
+            } catch (error) {
+                showResult('createResult', {error: error.message}, true);
+            } finally {
+                hideLoading('createLoading');
+            }
+        });
+
+        // Deposit Money
+        document.getElementById('depositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('depositLoading');
+
+            const data = {
+                student_id: document.getElementById('deposit_student_id').value,
+                amount: parseFloat(document.getElementById('deposit_amount').value),
+                phone: document.getElementById('deposit_phone').value
+            };
+
+            try {
+                const result = await apiCall('/deposit', 'POST', data);
+                showResult('depositResult', result, result.error);
+                if (!result.error) {
+                    showResult('depositResult', {
+                        ...result,
+                        note: "Check your phone for M-Pesa prompt!"
+                    }, false);
+                }
+            } catch (error) {
+                showResult('depositResult', {error: error.message}, true);
+            } finally {
+                hideLoading('depositLoading');
+            }
+        });
+
+        // Check Balance
+        document.getElementById('balanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('balanceLoading');
+
+            const studentId = document.getElementById('balance_student_id').value;
+
+            try {
+                const result = await apiCall(`/balance/${studentId}`);
+                showResult('balanceResult', result, result.error);
+            } catch (error) {
+                showResult('balanceResult', {error: error.message}, true);
+            } finally {
+                hideLoading('balanceLoading');
+            }
+        });
+
+        // Transfer Money
+        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('transferLoading');
+
+            const data = {
+                from_student: document.getElementById('transfer_from').value,
+                to_student: document.getElementById('transfer_to').value,
+                amount: parseFloat(document.getElementById('transfer_amount').value)
+            };
+
+            try {
+                const result = await apiCall('/transfer', 'POST', data);
+                showResult('transferResult', result, result.error);
+                if (!result.error) {
+                    e.target.reset();
+                    loadTransactions();
+                }
+            } catch (error) {
+                showResult('transferResult', {error: error.message}, true);
+            } finally {
+                hideLoading('transferLoading');
+            }
+        });
+
+        // Load Wallets
+        async function loadWallets() {
+            showLoading('walletsLoading');
+            const list = document.getElementById('walletsList');
+
+            try {
+                const result = await apiCall('/wallets');
+
+                if (result.wallets && result.wallets.length > 0) {
+                    list.innerHTML = result.wallets.map(wallet => `
+                        <div class="wallet-item">
+                            <h3>${wallet.student_name}</h3>
+                            <p><strong>ID:</strong> ${wallet.student_id}</p>
+                            <p><strong>Balance:</strong> ${wallet.balance} KES</p>
+                            <p><strong>Wallet ID:</strong> ${wallet.wallet_id}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="text-align:center; padding:20px;">No wallets created yet</p>';
+                }
+            } catch (error) {
+                list.innerHTML = `<p style="color:red; text-align:center; padding:20px;">Error: ${error.message}</p>`;
+            } finally {
+                hideLoading('walletsLoading');
+            }
+        }
+
+        // Load Transactions
+        async function loadTransactions() {
+            showLoading('transactionsLoading');
+            const list = document.getElementById('transactionsList');
+
+            try {
+                const result = await apiCall('/transactions');
+
+                if (result.transactions && result.transactions.length > 0) {
+                    list.innerHTML = result.transactions.map(txn => `
+                        <div class="transaction-item">
+                            <p><strong>Type:</strong> ${txn.type}</p>
+                            <p><strong>Amount:</strong> ${txn.amount} KES</p>
+                            ${txn.from_student ? `<p><strong>From:</strong> ${txn.from_student}</p>` : ''}
+                            ${txn.to_student ? `<p><strong>To:</strong> ${txn.to_student}</p>` : ''}
+                            ${txn.student_id ? `<p><strong>Student:</strong> ${txn.student_id}</p>` : ''}
+                            <p><strong>Status:</strong> ${txn.status}</p>
+                            <p><strong>Time:</strong> ${new Date(txn.timestamp).toLocaleString()}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="text-align:center; padding:20px;">No transactions yet</p>';
+                }
+            } catch (error) {
+                list.innerHTML = `<p style="color:red; text-align:center; padding:20px;">Error: ${error.message}</p>`;
+            } finally {
+                hideLoading('transactionsLoading');
+            }
+        }
+
+        // Load wallets and transactions on page load
+        window.addEventListener('load', () => {
+            loadWallets();
+            loadTransactions();
+        });
+
+        // Auto-refresh every 10 seconds
+        setInterval(() => {
+            loadWallets();
+            loadTransactions();
+        }, 120000);
+    </script>
+</body>
+</html>

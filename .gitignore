@@ -1,0 +1,39 @@
+# Environment variables (contains sensitive API keys)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database (contains sensitive student data)
+*.db
+*.sqlite
+*.sqlite3
+
+# ngrok
+ngrok.exe
+ngrok.zip
+ngrok.yml

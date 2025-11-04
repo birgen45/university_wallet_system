@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(python -m py_compile:*)",
+      "Bash(netstat:*)",
+      "Bash(python app.py:*)",
+      "Bash(python test_env.py:*)",
+      "Bash(pip show:*)",
+      "WebSearch",
+      "Bash(taskkill:*)",
+      "Bash(where:*)",
+      "Bash(curl:*)",
+      "Bash(unzip:*)",
+      "Bash(python install_ngrok.py:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(python setup_ngrok.py:*)",
+      "Bash(rm:*)",
+      "Bash(powershell -Command \"cd ''C:\\Users\\limoc\\university_wallet_system''; Expand-Archive -Path ''.\\ngrok.zip'' -DestinationPath ''.'' -Force\")",
+      "Bash(./ngrok.exe http:*)",
+      "Bash(./ngrok.exe config add-authtoken:*)",
+      "Bash(python:*)",
+      "Bash(tar:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(sqlite3:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:developers.intasend.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,5 @@
+intasend-python
+flask
+flask-cors
+python-dotenv
+requests
